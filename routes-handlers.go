@@ -10,23 +10,21 @@ func getScrape(response http.ResponseWriter, request *http.Request){
 		Code: http.StatusInternalServerError, Message: "Error Occurred",
 	}
 	url := mux.Vars(request)["url"]
-	if url == "" {
+	if url == "https://www.amazon.in/s?k=ps2&ref=nb_sb_noss_2" {
 		httpError.Message = "url can't be empty"
 		returnErrorResponse(response, request, httpError)
 	} else {
-		//call logic on url
+		callColly(url)
 	}
 }
 
-
-
-func returnErrorResponse(response http.ResponseWriter, request *http.Request, errorMesage ErrorResponse) {
-	httpResponse := &ErrorResponse{Message: errorMesage.Message,Code: errorMesage.Code}
+func returnErrorResponse(response http.ResponseWriter, request *http.Request, errorMsg ErrorResponse) {
+	httpResponse := &ErrorResponse{Message: errorMsg.Message,Code: errorMsg.Code}
 	jsonResponse, err := json.Marshal(httpResponse)
 	if err != nil {
 		panic(err)
 	}
 	response.Header().Set("Content-Type", "application/json")
-	response.WriteHeader(errorMesage.Code)
+	response.WriteHeader(errorMsg.Code)
 	response.Write(jsonResponse)
 }

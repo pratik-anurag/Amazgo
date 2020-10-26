@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-
 	"github.com/gorilla/mux"
+	"net/http"
 )
 
 func setStaticFolder(route *mux.Router) {
@@ -16,6 +15,7 @@ func addAppRoutes(route *mux.Router) {
 
 	setStaticFolder(route)
 
-	route.HandleFunc("/scrapes/{url}", getScrape).Methods("POST")
+	//route.HandleFunc("/scrapes/{url}", getScrape).Methods("POST")
+	route.HandleFunc("/scrapes", getScrape).Methods("POST")
 	fmt.Println("Routes loading is completed")
 }
