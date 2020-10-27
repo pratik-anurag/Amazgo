@@ -31,7 +31,6 @@ func ConnectDB() *mongo.Collection {
 
 func GetError(err error, w http.ResponseWriter) {
 
-	log.Fatal(err.Error())
 	var response = ErrorResponse{
 		Message: err.Error(),
 		Code:   http.StatusInternalServerError,
@@ -41,6 +40,7 @@ func GetError(err error, w http.ResponseWriter) {
 
 	w.WriteHeader(response.Code)
 	w.Write(message)
+	log.Fatal(err.Error())
 }
 
 type Configuration struct {

@@ -15,7 +15,7 @@ func addAppRoutes(route *mux.Router) {
 
 	setStaticFolder(route)
 
-	//route.HandleFunc("/scrapes/{url}", getScrape).Methods("POST")
 	route.HandleFunc("/scrapes", getScrape).Methods("POST")
+	route.HandleFunc("/products", insertProduct).Methods("POST")
 	fmt.Println("Routes loading is completed")
 }
