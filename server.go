@@ -9,13 +9,11 @@ import (
 
 func main() {
 
-	fmt.Println("Server will start at http://localhost:8000/")
-
-	//ConnectDB()
+	fmt.Println("Server will start at http://localhost:3000/")
 
 	route := mux.NewRouter()
 
 	addAppRoutes(route)
 
-	log.Fatal(http.ListenAndServe(":8000", route))
+	log.Fatal(http.ListenAndServe(":3000", route))
 }

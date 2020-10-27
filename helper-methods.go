@@ -43,22 +43,6 @@ func callColly(url string)[]byte{
 			outputDetail = CollyResponse{
 				Name:productName,ImageUrl:imageUrl,TotalReview:totalReviews,Description:description,Price:price,
 			}
-
-			//var newProduct ProductResponse
-			//var newProd Prod
-			//newProduct.Url = url
-			//newProd.Name = outputDetail.Name
-			//newProd.ImageUrl = outputDetail.ImageUrl
-			//newProd.TotalReview = outputDetail.TotalReview
-			//newProd.Description = outputDetail.Description
-			//newProd.Price = outputDetail.Price
-			//newProduct.Product = &newProd
-			//newProduct.Timestamp = time.Now()
-			//collection := ConnectDB()
-			//_, err := collection.InsertOne(context.TODO(), newProduct)
-			//if err != nil {
-			//	return
-			//}
 			outputDetails = append(outputDetails,outputDetail)
 		})
 	})
