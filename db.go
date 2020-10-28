@@ -11,15 +11,13 @@ import (
 )
 
 func ConnectDB() *mongo.Collection {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://mongo")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
-
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	fmt.Println("Connected to MongoDB!")
-	collection := client.Database("go_rest_api").Collection("amazgo")
+	collection := client.Database("amazego").Collection("amazego")
 	return collection
 }
 
