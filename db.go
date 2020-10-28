@@ -11,7 +11,7 @@ import (
 )
 
 func ConnectDB() *mongo.Collection {
-	clientOptions := options.Client().ApplyURI("mongodb+srv://username:password@cluster.mongodb.net/test?retryWrites=true&w=majority")
+	clientOptions := options.Client().ApplyURI("mongodb://0.0.0.0:27017")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
