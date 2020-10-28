@@ -41,10 +41,12 @@ func returnErrorResponse(response http.ResponseWriter, request *http.Request, er
 func insertProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var product ProductResponse
-	err1 := json.NewDecoder(r.Body).Decode(&product)
+	var prod Prod
+	err1 := json.NewDecoder(r.Body).Decode(&prod)
 	if err1 != nil {
 		fmt.Println("error in build body: ", err1)
 	}
+	product.Product = &prod
 	product.Timestamp = time.Now()
 	url:= r.URL.Query().Get("url")
 	product.Url = url
@@ -59,17 +61,19 @@ func insertProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func insertManyProduct(jsonResponse []byte,url string,w http.ResponseWriter, r *http.Request){
-	var product []ProductResponse
-	err1:= json.Unmarshal(jsonResponse, &product)
-	if err1 != nil {
-		fmt.Println("error in build body: ", err1)
+	var product []Prod
+	err:= json.Unmarshal(jsonResponse, &product)
+	if err != nil {
+		fmt.Println("error in build body: ", err)
 	}
 	for i := range product {
 		doc := product[i]
-		doc.Timestamp = time.Now()
-		doc.Url = url
+		var product ProductResponse
+		product.Product = &doc
+		product.Timestamp = time.Now()
+		product.Url = url
 		collection := ConnectDB()
-		result, insertErr := collection.InsertOne(context.TODO(), doc)
+		result, insertErr := collection.InsertOne(context.TODO(), product)
 		if insertErr != nil {
 			GetError(insertErr, w)
 			return
