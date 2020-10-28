@@ -20,10 +20,9 @@ func getScrape(response http.ResponseWriter, request *http.Request){
 		if jsonResponse == nil {
 			returnErrorResponse(response, request, httpError)
 		} else {
-
 			response.Header().Set("Content-Type", "application/json")
 			response.Write(jsonResponse)
-			insertManyProduct(response, request)
+			insertManyProduct(jsonResponse,url,response, request)
 		}
 	}
 }
@@ -59,32 +58,23 @@ func insertProduct(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 }
 
-func insertManyProduct(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var product,prod []interface{}
-	url:= r.URL.Query().Get("url")
-	prod = append(prod,AddUrlAndTimeStamp(product,url))
-	err1 := json.NewDecoder(r.Body).Decode(&product)
+func insertManyProduct(jsonResponse []byte,url string,w http.ResponseWriter, r *http.Request){
+	var product []ProductResponse
+	err1:= json.Unmarshal(jsonResponse, &product)
 	if err1 != nil {
 		fmt.Println("error in build body: ", err1)
 	}
-	collection := ConnectDB()
-	result, err := collection.InsertMany(context.TODO(), prod)
-	if err != nil {
-		GetError(err, w)
-		return
-	}
+	for i := range product {
+		doc := product[i]
+		doc.Timestamp = time.Now()
+		doc.Url = url
+		collection := ConnectDB()
+		result, insertErr := collection.InsertOne(context.TODO(), doc)
+		if insertErr != nil {
+			GetError(insertErr, w)
+			return
+		}
 
-	json.NewEncoder(w).Encode(result)
-}
-
-func AddUrlAndTimeStamp(z interface{},url string)interface{}{
-	for i, _ := range(z.([]interface{})) {
-		q := z.([]interface{})[i]
-		b := (q).(ProductResponse)
-		b.Url = url
-		b.Timestamp = time.Now()
-		z.([]interface{})[i] = b
+		json.NewEncoder(w).Encode(result)
 	}
-	return z
 }

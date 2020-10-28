@@ -1,21 +1,17 @@
 package main
-import (
-"context"
-"encoding/json"
-"fmt"
-"log"
-"net/http"
-"os"
 
-"github.com/joho/godotenv"
-"go.mongodb.org/mongo-driver/mongo"
-"go.mongodb.org/mongo-driver/mongo/options"
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
+	"net/http"
 )
 
 func ConnectDB() *mongo.Collection {
-	config := GetConfiguration()
-	clientOptions := options.Client().ApplyURI(config.ConnectionString)
-
+	clientOptions := options.Client().ApplyURI("mongodb+srv://username:password@cluster.mongodb.net/test?retryWrites=true&w=majority")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
@@ -23,9 +19,7 @@ func ConnectDB() *mongo.Collection {
 	}
 
 	fmt.Println("Connected to MongoDB!")
-
 	collection := client.Database("go_rest_api").Collection("amazgo")
-
 	return collection
 }
 
@@ -41,26 +35,6 @@ func GetError(err error, w http.ResponseWriter) {
 	w.WriteHeader(response.Code)
 	w.Write(message)
 	log.Fatal(err.Error())
-}
-
-type Configuration struct {
-	Port             string
-	ConnectionString string
-}
-
-func GetConfiguration() Configuration {
-	err := godotenv.Load("./.env")
-
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-
-	configuration := Configuration{
-		os.Getenv("PORT"),
-		os.Getenv("CONNECTION_STRING"),
-	}
-
-	return configuration
 }
 
 
